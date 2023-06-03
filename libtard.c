@@ -3,6 +3,7 @@
 
 #include "libtard.h"
 #include <string.h>
+#include <math.h>
 
 typedef uint32_t u32;
 typedef uint8_t u8;
@@ -18,7 +19,7 @@ static void seterr(Lt *lt)
 	lt->msz = ~0u;
 }
 
-static int make(Lt *lt, u32 lsz, u32 msz)
+static int make(Lt *lt, u32 msz, float lf)
 {
 	u32 ksz = sizeof(*lt->k) * msz,
 	    vsz = sizeof(*lt->v) * msz, vo = ksz,
@@ -26,15 +27,16 @@ static int make(Lt *lt, u32 lsz, u32 msz)
 	u8 *a = LT_ALLOC(ksz + vsz + osz);
 	if (!a) {
 		seterr(lt);
-		return ~0u;
+		return 0;
 	}
 	*lt = (Lt){
 		.k = (void*)a,
 		.v = (void*)(a + vo),
 		.o = (void*)(a + oo),
 		.sz = 0,
-		.lsz = lsz,
-		.msz = msz
+		.lsz = (u32)ceilf((float)msz * lf),
+		.msz = msz,
+		.lf = lf
 	};
 	memset(lt->o, 0, osz);
 	return 1;
@@ -42,8 +44,8 @@ static int make(Lt *lt, u32 lsz, u32 msz)
 
 int lt_make(Lt *lt, u32 sz, float lf)
 {
-	sz = align((u32)(sz / lf));
-	return make(lt, sz * lf, sz);
+	sz = align((u32)((float)sz / lf));
+	return make(lt, sz, lf);
 }
 
 void lt_dstr(Lt *lt)
@@ -74,7 +76,7 @@ static u32 bwd(const Lt *ht, u32 p)
 static int rehash(Lt *lt)
 {
 	Lt new;
-	if (!make(&new, lt->lsz * 2, lt->msz * 2))
+	if (!make(&new, lt->msz * 2, lt->lf))
 		return 0;
 	for (u32 i = 0; i < lt->msz && lt->sz; ++i) {
 		if (!lt->o[i])
@@ -109,10 +111,10 @@ static u32 *add(Lt *lt, u32 k, u32 v)
 		}
 	}
 	++lt->sz;
-	lt->k[p] = k;
-	lt->v[p] = v;
-	lt->o[p] = (u8)o;
-	return &lt->v[p];
+	lt->k[t] = k;
+	lt->v[t] = v;
+	lt->o[t] = (u8)o;
+	return &lt->v[t];
 }
 
 u32 *lt_add(Lt *lt, u32 k, u32 v)
@@ -129,7 +131,7 @@ u32 *lt_add(Lt *lt, u32 k, u32 v)
 void lt_rm(Lt *lt, uint32_t *v)
 {
 	--lt->sz;
-	u32 p = v - lt->v;
+	u32 p = (u32)(v - lt->v);
 	for (u32 f; f = fwd(lt, p), lt->o[f] > 1; p = f) {
 		lt->k[p] = lt->k[f];
 		lt->v[p] = lt->v[f];

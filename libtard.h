@@ -17,6 +17,7 @@ typedef struct Lt {
 	uint32_t *k, *v;
 	uint8_t *o;
 	uint32_t sz, lsz, msz;
+	float lf;
 } Lt;
 
 int lt_make(Lt *lt, uint32_t sz, float lf);
