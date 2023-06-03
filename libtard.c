@@ -23,7 +23,7 @@ static int make(Lt *lt, u32 lsz, u32 msz)
 	u32 ksz = sizeof(*lt->k) * msz,
 	    vsz = sizeof(*lt->v) * msz, vo = ksz,
 	    osz = sizeof(*lt->o) * msz, oo = vo + vsz;
-	void *a = LT_ALLOC(ksz + vsz + osz);
+	u8 *a = LT_ALLOC(ksz + vsz + osz);
 	if (!a) {
 		seterr(lt);
 		return ~0u;
@@ -130,8 +130,7 @@ void lt_rm(Lt *lt, uint32_t *v)
 {
 	--lt->sz;
 	u32 p = v - lt->v;
-	for (u32 f; lt->o[f] > 1; p = f) {
-		f = fwd(lt, p);
+	for (u32 f; f = fwd(lt, p), lt->o[f] > 1; p = f) {
 		lt->k[p] = lt->k[f];
 		lt->v[p] = lt->v[f];
 		lt->o[p] = lt->o[f] - 1;
