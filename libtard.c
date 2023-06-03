@@ -85,8 +85,6 @@ static int rehash(Lt *lt)
 	return 1;
 }
 
-#include <stdio.h>
-
 static u32 *add(Lt *lt, u32 k, u32 v)
 {
 	if (lt->sz == lt->lsz)
