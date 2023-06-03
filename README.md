@@ -1,18 +1,21 @@
 # libtard
-fast hash table library
+Simple and fast u32-u32 hash-table library (200 LOC).
 
-# building & linking
-building: build libtard.c to tard.a
+# Building & linking
+Building: build libtard.c to tard.a
 
-linking: add -ltard to cflags
+Linking: add -ltard to cflags
 
-# simple
-yes
+# Simple
+Yes
 
-# speed
-fast
+# Speed
+Fast
 
-# benchmarks
-maybe one day
+# Benchmarks
+Maybe one day.
 
-(however it's probably faster than what you are using right now though ;-) )
+(However it's probably faster than what you are using right now ;-) )
+
+# License
+ISC
