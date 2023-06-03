@@ -68,11 +68,6 @@ static u32 fwd(const Lt *lt, u32 p)
 	return ++p != lt->msz ? p : 0;
 }
 
-static u32 bwd(const Lt *ht, u32 p)
-{
-	return p-- ? p : ht->msz - 1;
-}
-
 static int rehash(Lt *lt)
 {
 	Lt new;
@@ -90,6 +85,8 @@ static int rehash(Lt *lt)
 	return 1;
 }
 
+#include <stdio.h>
+
 static u32 *add(Lt *lt, u32 k, u32 v)
 {
 	if (lt->sz == lt->lsz)
@@ -105,21 +102,21 @@ static u32 *add(Lt *lt, u32 k, u32 v)
 	if (o >= 0xFF)
 		return NULL;
 	u32 t = p;
-	for (; lt->o[p]; p = fwd(lt, p));
-	for (u32 b; p != t; p = b) {
-		b = bwd(lt, p);
-		lt->k[p] = lt->k[b];
-		lt->v[p] = lt->v[b];
-		lt->o[p] = lt->o[b] + 1;
-		if (lt->o[p] == 0xFF) {
-			lt->o[p] = 0; /* 'erase' entry */
+	for (; lt->o[p]; p = fwd(lt, p)) {
+		u32 tk = k, tv = v, to = o;
+		k = lt->k[p], lt->k[p] = tk;
+		v = lt->v[p], lt->v[p] = tv;
+		o = lt->o[p] + 1, lt->o[p] = (u8)to;
+		if (o == 0xFF) {
+			lt->k[t] = k; /* place the temp entries somewhere */
+			lt->v[t] = v; /* as current k, v will be added anyway */
 			return NULL;
 		}
 	}
 	++lt->sz;
-	lt->k[t] = k;
-	lt->v[t] = v;
-	lt->o[t] = (u8)o;
+	lt->k[p] = k;
+	lt->v[p] = v;
+	lt->o[p] = (u8)o;
 	return &lt->v[t];
 }
 

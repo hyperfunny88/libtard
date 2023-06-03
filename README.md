@@ -1,7 +1,7 @@
 # libtard
 Simple and fast u32-u32 hash-table library (200 LOC).
 
-Allows for high load factors (~97% normally, ~99% when not inserting a lot) and
+Allows for high load factors (~97% normally, ~98% when not inserting a lot) and
 doesn't require forced power-of-2 sizes - perfect balancing of speed and memory.
 
 # Building & linking
