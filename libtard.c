@@ -95,7 +95,13 @@ static u32 *add(Lt *lt, u32 k, u32 v)
 	if (lt->sz == lt->lsz)
 		return NULL;
 	u32 p = pos(lt, k), o = 1;
-	for (; o <= lt->o[p]; p = fwd(lt, p), ++o);
+	for (; o < lt->o[p]; p = fwd(lt, p), ++o);
+	for (; o == lt->o[p]; p = fwd(lt, p), ++o) {
+		if (lt->k[p] == k) {
+			lt->v[p] = v;
+			return &lt->v[p];
+		}
+	}
 	if (o >= 0xFF)
 		return NULL;
 	u32 t = p;
