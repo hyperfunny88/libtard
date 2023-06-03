@@ -15,4 +15,4 @@ fast
 # benchmarks
 maybe one day
 
-(however it's probably faster than what you are using right now though ;))
+(however it's probably faster than what you are using right now though ;-) )
