@@ -14,4 +14,5 @@ int main(void)
 	}
 	lt_rm(&lt, lt_find(&lt, 50));
 	lt_dstr(&lt);
+	return 0;
 }
