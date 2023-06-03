@@ -1,4 +1,4 @@
-#include "libtard.h"
+#include "libtard.c"
 #include <stdio.h>
 
 int main(void)
