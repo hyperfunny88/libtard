@@ -7,10 +7,10 @@
 
 #include <stdint.h>
 
-#ifndef LT_ALC
-#include <stdlib.h>
-#define LT_ALLOC(sz) malloc(sz)
-#define LT_FREE(p) free(p)
+#ifndef LT_ALLOC
+#	include <stdlib.h>
+#	define LT_ALLOC(sz) malloc(sz)
+#	define LT_FREE(p) free(p)
 #endif
 
 typedef struct Lt {
